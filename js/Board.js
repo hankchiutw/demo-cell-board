@@ -7,6 +7,8 @@ function Board(){
     this.dom = document.createElement('div');
     this.dom.className = 'board';
 
+    this.downRatio = 0.8;
+
     this.spots = [];
     
 }
@@ -21,7 +23,8 @@ Board.create = function(){
 
 Board.prototype = {
     appendCell: appendCell,
-    putSpot: putSpot
+    putSpot: putSpot,
+    _putSpot: _putSpot
 };
 
 function appendCell(cell){
@@ -33,28 +36,63 @@ function appendCell(cell){
  */
 function putSpot(spot){
     var self = this;
-    var start = Date.now();
     self.dom.appendChild(spot.dom);
 
     // detect when image rendered and can get size
-    window.requestAnimationFrame(function(){
-        window.requestAnimationFrame(function(){
-            // img rendered
-            spot.attemptCount++;
-            var randomTop = parseInt(Math.random()*(self.dom.scrollHeight-spot.dom.scrollHeight))+'px';
-            var randomLeft = parseInt(Math.random()*(self.dom.scrollWidth-spot.dom.scrollWidth))+'px';
-            console.log('putSpot: id, attempts, cosumedTime:', spot.id, spot.attemptCount, Date.now()-start);
-            spot.dom.style.top = randomTop;
-            spot.dom.style.left = randomLeft;
+    spot.dom.addEventListener('load', load);
 
-            // validate position
-            var isOverlap = self.spots.some(function(aSpot){ spot.isOverlap(aSpot); });
+    function load(){ starter(); }
+    function starter(){ window.requestAnimationFrame(renderer); }
+    function renderer(){ window.requestAnimationFrame(doPut); }
+    function doPut(){ self._putSpot(spot); }
+}
 
-            if(spot.attemptCount > 100) console.log('(FAIL) give up after too many tries');
-            else if(isOverlap) self.putSpot(spot);
+/**
+ * Put spot, check if overlap, scale down and retry, failed if size too small
+ * @private
+ */
+function _putSpot(spot){
+    var self = this;
+    var start = Date.now();
+    // img rendered
+    spot.attemptCount++;
+    // fail
+    if(spot.attemptCount > 10 && spot.dom.height == 0) {
+        console.log('fail to put the spot:', spot);
+        self.dom.removeChild(spot.dom);
+        return;
+    }
 
-            self.spots.push(spot);
+    var randomTop = parseInt(Math.random()*(self.dom.scrollHeight-spot.dom.height))+'px';
+    var randomLeft = parseInt(Math.random()*(self.dom.scrollWidth-spot.dom.width))+'px';
+    if(spot.dom.height == 0 && spot.attemptCount < 10){
+        console.log('DEBUG:', randomTop, self.dom.scrollHeight, spot.dom.height, spot);
+       // return; 
+    }
+    spot.dom.style.top = randomTop;
+    spot.dom.style.left = randomLeft;
 
-        });
+    // validate position
+    var isOverlap = self.spots.some(function(aSpot){
+        return spot.isOverlap(aSpot);
     });
+
+    // put successfully
+    if(!isOverlap){
+        self.spots.push(spot);
+        console.log('putSpot: id, attempts, cosumedTime:', spot.id, spot.attemptCount, Date.now()-start);
+        return;
+    }
+
+    // retry
+    if(spot.attemptCount%10 == 0){
+        // scale down dom
+        var ratio = spot.dom.height / spot.dom.width;
+        spot.dom.width = spot.dom.width*self.downRatio;
+        spot.dom.height = spot.dom.width*ratio;
+        console.log('scale down and retry:');
+//        console.log('DEBUG2:', ratio, spot.dom.height, spot.dom.width);
+    }
+    self._putSpot(spot);
+
 }
