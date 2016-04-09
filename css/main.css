@@ -10,12 +10,6 @@ body{
     left: 10%;
 }
 
-.cell{
-    width: 25%;
-    height: 33%;
-    float: left;
-}
-
 .spot{
     position: absolute;
 }
