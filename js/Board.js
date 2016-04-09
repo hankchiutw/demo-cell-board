@@ -1,12 +1,13 @@
 
 /**
  * Class Board
- * A board has 12 cells in 4x3
+ * A board has spots
  **/
 function Board(){
     this.dom = document.createElement('div');
     this.dom.className = 'board';
 
+    this.aspectRatio = 3/4;
     this.downRatio = 0.9;
     this.desityRatio = 1/6;
 
@@ -17,20 +18,15 @@ function Board(){
 Board.create = function(){
     var board = new Board();
     document.body.appendChild(board.dom);
-    board.dom.style.height = board.dom.scrollWidth*3/4+'px';
-    console.log('mainBoard render ratio:', board.dom.scrollHeight/board.dom.scrollWidth );
+    board.dom.style.height = board.dom.scrollWidth*board.aspectRatio+'px';
+    console.log('board created');
     return board;
 };
 
 Board.prototype = {
-    appendCell: appendCell,
     putSpot: putSpot,
     _putSpot: _putSpot
 };
-
-function appendCell(cell){
-    this.dom.appendChild(cell.dom);
-}
 
 /**
  * Put one spot and validate position. If fail(overlap), return false
@@ -53,12 +49,12 @@ function putSpot(spot){
 }
 
 /**
- * Put spot, check if overlap, scale down and retry, failed if size too small
+ * Put one spot and check if overlapped.
+ * Scale down and retry until passed. Failed if size becomes too small.
  * @private
  */
 function _putSpot(spot){
     var self = this;
-    // img rendered
     spot.attemptCount++;
 
     // scale down if too many tries or too large
@@ -74,22 +70,19 @@ function _putSpot(spot){
         return;
     }
 
+    // generate random location within the board
     var randomTop = parseInt(Math.random()*(self.dom.scrollHeight-spot.dom.height))+'px';
     var randomLeft = parseInt(Math.random()*(self.dom.scrollWidth-spot.dom.width))+'px';
     spot.dom.style.top = randomTop;
     spot.dom.style.left = randomLeft;
 
-    // validate position
+    // validate location
     var isOverlap = self.spots.some(function(aSpot){
         return spot.isOverlap(aSpot);
     });
 
-    // put successfully
-    if(!isOverlap){
-        self.spots.push(spot);
-        return;
-    }
-
-    self._putSpot(spot);
+    // successfully placed or retry
+    if(!isOverlap) self.spots.push(spot);
+    else self._putSpot(spot);
 
 }

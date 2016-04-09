@@ -24,6 +24,9 @@ Spot.create = function(i){
 };
 
 Spot.prototype = {
+    /**
+     * Check two spots if overlapped or not.
+     */
     isOverlap: function(spot){
         var t1 = this.dom.offsetTop;
         var h1 = this.dom.height;
@@ -37,22 +40,30 @@ Spot.prototype = {
         var ret = _isBetween(t1, h1, t2, h2) && _isBetween(l1, w1, l2, w2);
         return ret;
     },
+
+    /**
+     * Update DOM size
+     */
     scale: function(ratio){
-        var rate = this.dom.height / this.dom.width;
+        var aspectRatio = this.dom.height / this.dom.width;
         this.dom.width = this.dom.width*ratio;
-        this.dom.height = this.dom.width*rate;
+        this.dom.height = this.dom.width*aspectRatio;
     }
 };
 
 /**
  * check if overlap
  * @return {Boolean} true if -b<y-x<a
+ * @private
  */
 function _isBetween(y, b, x, a){
     return -b < y-x && y-x < a;
 }
 
-
+/**
+ * Store init values for drag
+ * @private
+ */
 function _onDragStart(ev){
     var dom = ev.srcElement;
     if(ev.changedTouches !== undefined){
@@ -64,6 +75,10 @@ function _onDragStart(ev){
     dom.style.display = 0;
 }
 
+/**
+ * Update DOM by calculating location offsets
+ * @private
+ */
 function _onDrag(ev){
     var dom = ev.srcElement;
 
@@ -81,6 +96,10 @@ function _onDrag(ev){
     if(top >= 0 && top < dom.parentElement.scrollHeight - dom.height) dom.style.top = top + 'px';
 }
 
+/**
+ * Restore style when drag end
+ * @private
+ */
 function _onDragEnd(ev){
     var dom = ev.srcElement;
     dom.style.opacity = 1;
