@@ -7,7 +7,8 @@ function Board(){
     this.dom = document.createElement('div');
     this.dom.className = 'board';
 
-    this.downRatio = 0.8;
+    this.downRatio = 0.9;
+    this.desityRatio = 1/6;
 
     this.spots = [];
     
@@ -36,6 +37,7 @@ function appendCell(cell){
  */
 function putSpot(spot){
     var self = this;
+    var start = Date.now();
     self.dom.appendChild(spot.dom);
 
     // detect when image rendered and can get size
@@ -44,7 +46,10 @@ function putSpot(spot){
     function load(){ starter(); }
     function starter(){ window.requestAnimationFrame(renderer); }
     function renderer(){ window.requestAnimationFrame(doPut); }
-    function doPut(){ self._putSpot(spot); }
+    function doPut(){
+        self._putSpot(spot);
+        console.log('putSpot: id, attempts, cosumedTime:', spot.id, spot.attemptCount, Date.now()-start);
+    }
 }
 
 /**
@@ -53,9 +58,15 @@ function putSpot(spot){
  */
 function _putSpot(spot){
     var self = this;
-    var start = Date.now();
     // img rendered
     spot.attemptCount++;
+
+    // scale down if too many tries or too large
+    if(spot.attemptCount%10 == 0 || spot.dom.width > self.dom.scrollWidth*self.desityRatio){
+        spot.scale(self.downRatio);
+        return self._putSpot(spot);
+    }
+
     // fail
     if(spot.attemptCount > 10 && spot.dom.height == 0) {
         console.log('fail to put the spot:', spot);
@@ -65,10 +76,6 @@ function _putSpot(spot){
 
     var randomTop = parseInt(Math.random()*(self.dom.scrollHeight-spot.dom.height))+'px';
     var randomLeft = parseInt(Math.random()*(self.dom.scrollWidth-spot.dom.width))+'px';
-    if(spot.dom.height == 0 && spot.attemptCount < 10){
-        console.log('DEBUG:', randomTop, self.dom.scrollHeight, spot.dom.height, spot);
-       // return; 
-    }
     spot.dom.style.top = randomTop;
     spot.dom.style.left = randomLeft;
 
@@ -80,19 +87,9 @@ function _putSpot(spot){
     // put successfully
     if(!isOverlap){
         self.spots.push(spot);
-        console.log('putSpot: id, attempts, cosumedTime:', spot.id, spot.attemptCount, Date.now()-start);
         return;
     }
 
-    // retry
-    if(spot.attemptCount%10 == 0){
-        // scale down dom
-        var ratio = spot.dom.height / spot.dom.width;
-        spot.dom.width = spot.dom.width*self.downRatio;
-        spot.dom.height = spot.dom.width*ratio;
-        console.log('scale down and retry:');
-//        console.log('DEBUG2:', ratio, spot.dom.height, spot.dom.width);
-    }
     self._putSpot(spot);
 
 }

@@ -29,6 +29,11 @@ Spot.prototype = {
         var w2 = spot.dom.width;
         var ret = _isBetween(t1, h1, t2, h2) && _isBetween(l1, w1, l2, w2);
         return ret;
+    },
+    scale: function(ratio){
+        var rate = this.dom.height / this.dom.width;
+        this.dom.width = this.dom.width*ratio;
+        this.dom.height = this.dom.width*rate;
     }
 };
 
