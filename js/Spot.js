@@ -1,12 +1,16 @@
 
 /**
  * Class Spot
- * A spot is an image and will be put on a cell
+ * A spot is an image and will be put on a board
  **/
 function Spot(i){
     this.dom = document.createElement('img');
     this.dom.className = 'spot';
     this.dom.src = 'images/'+i+'.png';
+
+    this.dom.addEventListener('dragstart', _onDragStart);
+    this.dom.addEventListener('drag', _onDrag);
+
     this.id = i;
     this.attemptCount = 0;
 }
@@ -43,4 +47,18 @@ Spot.prototype = {
  */
 function _isBetween(y, b, x, a){
     return -b < y-x && y-x < a;
+}
+
+
+function _onDragStart(ev){
+    ev.srcElement.dragStartX = ev.layerX;
+    ev.srcElement.dragStartY = ev.layerY;
+}
+
+function _onDrag(ev){
+    var dom = ev.srcElement;
+    var left = dom.offsetLeft + ev.layerX - dom.dragStartX;
+    var top = dom.offsetTop + ev.layerY - dom.dragStartY;
+    if(left >= 0) dom.style.left = left + 'px';
+    if(top >= 0) dom.style.top = top + 'px';
 }

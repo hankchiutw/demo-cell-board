@@ -48,7 +48,7 @@ function putSpot(spot){
     function renderer(){ window.requestAnimationFrame(doPut); }
     function doPut(){
         self._putSpot(spot);
-        console.log('putSpot: id, attempts, cosumedTime:', spot.id, spot.attemptCount, Date.now()-start);
+        console.log('putSpot: spot, attempts, cosumedTime:', spot, spot.attemptCount, Date.now()-start);
     }
 }
 
