@@ -5,11 +5,18 @@ body{
     background-color: lightblue;
     border: solid 1px black;
     width: 80%;
-    height: 80%;
-    position: absolute;
+    min-width: 100px;
+    position: relative;
     left: 10%;
 }
 
 .spot{
     position: absolute;
+}
+
+@media screen and (orientation: landscape){
+    .board{
+        width: 70%;
+        left: 15%;
+    }
 }

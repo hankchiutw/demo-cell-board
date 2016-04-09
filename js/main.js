@@ -7,13 +7,13 @@ for(var i = 0;i<12;i++){
     spots[i] = Spot.create(i);
 }
 
-var countDown = 12;
-var freq = 1;
-var countDownInterval = setInterval(function(){
-    if(countDown%freq == 0) randomlyPut();
+var countDown = 120;
+var freq = 10;
+var timer = setInterval(function(){
     countDown--;
+    if(countDown%freq == 0) randomlyPut();
     document.getElementById('count-down').innerHTML = countDown;
-    if(countDown == 0) clearInterval(countDownInterval);
+    if(countDown == 0) clearInterval(timer);
 }, 1000);
 
 function randomlyPut(){

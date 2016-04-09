@@ -41,7 +41,7 @@ function putSpot(spot){
     self.dom.appendChild(spot.dom);
 
     // detect when image rendered and can get size
-    if(spot.dom.complete) self._putSpot(spot);
+    if(spot.dom.complete) doPut();
     else spot.dom.addEventListener('load', load);
 
     function load(){ window.requestAnimationFrame(renderer); }
