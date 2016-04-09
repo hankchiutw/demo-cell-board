@@ -10,6 +10,8 @@ function Spot(i){
 
     this.dom.addEventListener('dragstart', _onDragStart);
     this.dom.addEventListener('drag', _onDrag);
+    this.dom.addEventListener('touchstart', _onDragStart);
+    this.dom.addEventListener('touchmove', _onDrag);
 
     this.id = i;
     this.attemptCount = 0;
@@ -51,14 +53,26 @@ function _isBetween(y, b, x, a){
 
 
 function _onDragStart(ev){
-    ev.srcElement.dragStartX = ev.layerX;
-    ev.srcElement.dragStartY = ev.layerY;
+    if(ev.changedTouches !== undefined){
+        ev.clientX = ev.changedTouches[0].clientX;
+        ev.clientY = ev.changedTouches[0].clientY;
+    }
+    ev.srcElement.dragStartX = ev.clientX;
+    ev.srcElement.dragStartY = ev.clientY;
 }
 
 function _onDrag(ev){
     var dom = ev.srcElement;
-    var left = dom.offsetLeft + ev.layerX - dom.dragStartX;
-    var top = dom.offsetTop + ev.layerY - dom.dragStartY;
+    if(ev.changedTouches !== undefined){
+        ev.clientX = ev.changedTouches[0].clientX;
+        ev.clientY = ev.changedTouches[0].clientY;
+    }
+
+    var left = dom.offsetLeft + ev.clientX - dom.dragStartX;
+    var top = dom.offsetTop + ev.clientY - dom.dragStartY;
+    dom.dragStartX = ev.clientX;
+    dom.dragStartY = ev.clientY;
+
     if(left >= 0) dom.style.left = left + 'px';
     if(top >= 0) dom.style.top = top + 'px';
 }
