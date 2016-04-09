@@ -10,6 +10,7 @@ function Spot(i){
 
     this.dom.addEventListener('dragstart', _onDragStart);
     this.dom.addEventListener('drag', _onDrag);
+    this.dom.addEventListener('dragend', _onDragEnd);
     this.dom.addEventListener('touchstart', _onDragStart);
     this.dom.addEventListener('touchmove', _onDrag);
 
@@ -53,16 +54,19 @@ function _isBetween(y, b, x, a){
 
 
 function _onDragStart(ev){
+    var dom = ev.srcElement;
     if(ev.changedTouches !== undefined){
         ev.clientX = ev.changedTouches[0].clientX;
         ev.clientY = ev.changedTouches[0].clientY;
     }
-    ev.srcElement.dragStartX = ev.clientX;
-    ev.srcElement.dragStartY = ev.clientY;
+    dom.dragStartX = ev.clientX;
+    dom.dragStartY = ev.clientY;
+    dom.style.display = 0;
 }
 
 function _onDrag(ev){
     var dom = ev.srcElement;
+
     if(ev.changedTouches !== undefined){
         ev.clientX = ev.changedTouches[0].clientX;
         ev.clientY = ev.changedTouches[0].clientY;
@@ -73,6 +77,11 @@ function _onDrag(ev){
     dom.dragStartX = ev.clientX;
     dom.dragStartY = ev.clientY;
 
-    if(left >= 0) dom.style.left = left + 'px';
-    if(top >= 0) dom.style.top = top + 'px';
+    if(left >= 0 && left < dom.parentElement.scrollWidth - dom.width) dom.style.left = left + 'px';
+    if(top >= 0 && top < dom.parentElement.scrollHeight - dom.height) dom.style.top = top + 'px';
+}
+
+function _onDragEnd(ev){
+    var dom = ev.srcElement;
+    dom.style.opacity = 1;
 }
