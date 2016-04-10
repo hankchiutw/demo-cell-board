@@ -16,6 +16,7 @@ function Spot(i){
 
     this.id = i;
     this.attemptCount = 0;
+    this.swingTimer;
 }
 
 Spot.create = function(i){
@@ -26,6 +27,7 @@ Spot.create = function(i){
 Spot.prototype = {
     /**
      * Check two spots if overlapped or not.
+     * @return {Boolean}
      */
     isOverlap: function(spot){
         var t1 = this.dom.offsetTop;
@@ -43,21 +45,70 @@ Spot.prototype = {
 
     /**
      * Update DOM size
+     * @param {Number} ratio
      */
     scale: function(ratio){
         var aspectRatio = this.dom.height / this.dom.width;
         this.dom.width = this.dom.width*ratio;
         this.dom.height = this.dom.width*aspectRatio;
+    },
+
+    /**
+     * Swing within the bounded area
+     * @param {Number} boundLeft
+     * @param {Number} boundTop
+     */
+    boundedSwing: function(boundLeft, boundTop){
+        var self = this;
+        var amplitudeRate = boundLeft*1;
+        var durationRate = boundLeft*1.2*_randomBetween(1, 1.5);
+        var smoothRate = durationRate*_randomBetween(0.5, 1);
+
+        if(this.swingTimer) this.freeze();
+        this.swingTimer = setInterval(function step(){
+            var dX = parseInt(_randomBetween(-1, 1)*amplitudeRate);
+            var dY = parseInt(_randomBetween(-1, 1)*_randomBetween(-1, 1)*amplitudeRate);
+            var nextX = self.dom.offsetLeft + dX;
+            var nextY = self.dom.offsetTop + dY;
+
+            // handle for outbound
+            if(!_isBetween(self.dom.width, boundLeft-2*self.dom.width, nextX, self.dom.width)) return step();
+            if(!_isBetween(self.dom.height, boundTop-2*self.dom.height, nextY, self.dom.height)) return step();
+
+            // random animation
+            self.dom.style.transform = 'translate('+dX+'px, '+dY+'px)';
+            self.dom.style['transition-duration'] = (durationRate)+'ms';
+            self.dom.style['transition-time-function'] = ['cubic-bezier(', Math.random(), Math.random(), Math.random(), Math.random(),')'].join(',');
+        }, smoothRate);
+    },
+
+    /**
+     * Freeze from swinging
+     */
+    freeze: function(){
+        window.clearInterval(this.swingTimer);
     }
 };
 
 /**
  * check if overlap
+ * @param {Number} o1 An origin
+ * @param {Number} d1 An deviation
+ * @param {Number} o2 An origin
+ * @param {Number} d3 An deviation
  * @return {Boolean} true if -b<y-x<a
  * @private
  */
-function _isBetween(y, b, x, a){
-    return -b < y-x && y-x < a;
+function _isBetween(o1, d1, o2, d2){
+    return -d1 < o1-o2 && o1-o2 < d2;
+}
+
+/**
+ * Get a random number between (a, b)
+ * @private
+ */
+function _randomBetween(a, b){
+    return Math.random()*(b-a)+a;
 }
 
 /**

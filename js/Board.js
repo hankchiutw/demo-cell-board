@@ -24,9 +24,22 @@ Board.create = function(){
 };
 
 Board.prototype = {
+    swingSpots: function(){
+        var self = this;
+        this.spots.forEach(function(spot){
+            spot.boundedSwing(self.dom.scrollWidth, self.dom.scrollHeight);
+        });
+    },
+    freezeSpots: function(){
+        var self = this;
+        this.spots.forEach(function(spot){
+            spot.freeze();
+        });
+    },
     putSpot: putSpot,
     _putSpot: _putSpot
 };
+
 
 /**
  * Put one spot and validate position. If fail(overlap), return false

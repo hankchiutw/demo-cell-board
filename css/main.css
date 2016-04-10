@@ -12,6 +12,8 @@ body{
 
 .spot{
     position: absolute;
+    transition: transform 100ms ease-in-out;
+    transform: translate(0, 0);
 }
 
 @media screen and (orientation: landscape){

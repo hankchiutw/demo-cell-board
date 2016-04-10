@@ -7,6 +7,7 @@ for(var i = 0;i<12;i++){
     spots[i] = Spot.create(i);
 }
 
+// start count down timer
 var countDown = 120;
 var freq = 10;
 var timer = setInterval(function(){
@@ -16,8 +17,17 @@ var timer = setInterval(function(){
     if(countDown == 0) clearInterval(timer);
 }, 1000);
 
+
+
 function randomlyPut(){
     var randomN = parseInt(Math.random()*Object.keys(spots).length);
     mainBoard.putSpot(spots[randomN]);
     spots.splice(randomN, 1);
+}
+
+function swing(){
+    mainBoard.swingSpots();
+}
+function freeze(){
+    mainBoard.freezeSpots();
 }
