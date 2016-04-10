@@ -49,8 +49,18 @@ Spot.prototype = {
      */
     scale: function(ratio){
         var aspectRatio = this.dom.height / this.dom.width;
-        this.dom.width = this.dom.width*ratio;
-        this.dom.height = this.dom.width*aspectRatio;
+        this.dom.width = Math.floor(this.dom.width*ratio);
+        this.dom.height = Math.floor(this.dom.width*aspectRatio);
+    },
+
+    /**
+     * Update DOM size and location
+     * @param {Number} ratio
+     */
+    scaleLocation: function(ratio){
+        this.dom.style.left = Math.floor(this.dom.offsetLeft*ratio)+'px';
+        this.dom.style.top = Math.floor(this.dom.offsetTop*ratio)+'px';
+        this.scale(ratio);
     },
 
     /**

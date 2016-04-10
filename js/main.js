@@ -18,8 +18,19 @@ var timer = setInterval(function(){
     if(countdown <= 0) clearInterval(timer);
 }, 1000);
 
+/**
+ * setup
+ */
+window.addEventListener("orientationchange", function() {
+    mainBoard.resize();
+});
+window.addEventListener("resize", function() {
+    mainBoard.resize();
+});
 
-
+/**
+ * implements
+ */
 function randomlyPut(){
     var randomN = parseInt(Math.random()*Object.keys(spots).length);
     mainBoard.putSpot(spots[randomN]);

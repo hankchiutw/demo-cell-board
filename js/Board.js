@@ -13,13 +13,14 @@ function Board(){
 
     this.spots = [];
     this.isSwing = false;
+    this.currentWidth;
     
 }
 
 Board.create = function(){
     var board = new Board();
     document.body.appendChild(board.dom);
-    board.dom.style.height = board.dom.scrollWidth*board.aspectRatio+'px';
+    board.resize();
     console.log('board created');
     return board;
 };
@@ -28,7 +29,7 @@ Board.prototype = {
     swingSpots: function(){
         var self = this;
         this.spots.forEach(function(spot){
-            spot.boundedSwing(self.dom.scrollWidth, self.dom.scrollHeight);
+            spot.boundedSwing(self.dom.offsetWidth, self.dom.offsetHeight);
         });
         this.isSwing = true;
     },
@@ -38,6 +39,25 @@ Board.prototype = {
             spot.freeze();
         });
         this.isSwing = false;
+    },
+
+    /**
+     * Resize the board and relocate spots
+     */
+    resize: function(){
+        this.dom.style.height = this.dom.offsetWidth*this.aspectRatio+'px';
+        if(!this.currentWidth) this.currentWidth = this.dom.offsetWidth;
+
+        var changedRatio = this.dom.offsetWidth / this.currentWidth;
+        this.spots.forEach(function(spot){
+            spot.scaleLocation(changedRatio);
+        });
+        this.currentWidth = this.dom.offsetWidth;
+
+        if(this.isSwing){
+            this.freezeSpots();
+            this.swingSpots();
+        }
     },
     putSpot: putSpot,
     _putSpot: _putSpot
@@ -61,7 +81,7 @@ function putSpot(spot){
     function doPut(){
         self._putSpot(spot);
         console.log('putSpot: spot, attempts, cosumedTime:', spot, spot.attemptCount, Date.now()-start);
-        if(self.isSwing) spot.boundedSwing(self.dom.scrollWidth, self.dom.scrollHeight);
+        if(self.isSwing) spot.boundedSwing(self.dom.offsetWidth, self.dom.offsetHeight);
     }
 }
 
@@ -75,7 +95,7 @@ function _putSpot(spot){
     spot.attemptCount++;
 
     // scale down if too many tries or too large
-    if(spot.attemptCount%10 == 0 || spot.dom.width > self.dom.scrollWidth*self.densityRatio){
+    if(spot.attemptCount%10 == 0 || spot.dom.width > self.dom.offsetWidth*self.densityRatio){
         spot.scale(self.scaleDownRatio);
         return self._putSpot(spot);
     }
@@ -88,8 +108,8 @@ function _putSpot(spot){
     }
 
     // generate random location within the board
-    var randomTop = parseInt(Math.random()*(self.dom.scrollHeight-spot.dom.height))+'px';
-    var randomLeft = parseInt(Math.random()*(self.dom.scrollWidth-spot.dom.width))+'px';
+    var randomTop = parseInt(Math.random()*(self.dom.offsetHeight-spot.dom.height))+'px';
+    var randomLeft = parseInt(Math.random()*(self.dom.offsetWidth-spot.dom.width))+'px';
     spot.dom.style.top = randomTop;
     spot.dom.style.left = randomLeft;
 
