@@ -28,7 +28,9 @@ function randomlyPut(){
 
 function swing(){
     mainBoard.swingSpots();
+    document.getElementById('is-swinging').innerHTML = mainBoard.isSwing;
 }
 function freeze(){
     mainBoard.freezeSpots();
+    document.getElementById('is-swinging').innerHTML = mainBoard.isSwing;
 }
