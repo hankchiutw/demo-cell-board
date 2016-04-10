@@ -60,33 +60,61 @@ Spot.prototype = {
      */
     boundedSwing: function(boundLeft, boundTop){
         var self = this;
-        var amplitudeRate = boundLeft*1;
-        var durationRate = boundLeft*1.2*_randomBetween(1, 1.5);
-        var smoothRate = durationRate*_randomBetween(0.5, 1);
+        var w = self.dom.width;
+        var h = self.dom.height;
 
-        if(this.swingTimer) this.freeze();
-        this.swingTimer = setInterval(function step(){
-            var dX = parseInt(_randomBetween(-1, 1)*amplitudeRate);
-            var dY = parseInt(_randomBetween(-1, 1)*_randomBetween(-1, 1)*amplitudeRate);
-            var nextX = self.dom.offsetLeft + dX;
-            var nextY = self.dom.offsetTop + dY;
+        var animDeviation = 0;
+        var amplitudeRate = boundLeft;
 
-            // handle for outbound
-            if(!_isBetween(self.dom.width, boundLeft-2*self.dom.width, nextX, self.dom.width)) return step();
-            if(!_isBetween(self.dom.height, boundTop-2*self.dom.height, nextY, self.dom.height)) return step();
+        if(self.swingTimer) self.freeze();
 
-            // random animation
-            self.dom.style.transform = 'translate('+dX+'px, '+dY+'px)';
-            self.dom.style['transition-duration'] = (durationRate)+'ms';
-            self.dom.style['transition-time-function'] = ['cubic-bezier(', Math.random(), Math.random(), Math.random(), Math.random(),')'].join(',');
-        }, smoothRate);
+        // different interval for each swing
+        (function doSwing(){
+            var speedRate = _randomBetween(300, 1000);
+            var durationRate = speedRate*_randomBetween(1, 3);
+            self.swingTimer = setTimeout(function step(){
+                var X = self.dom.offsetLeft;
+                var Y = self.dom.offsetTop;
+
+                // random direction
+                var deg = _randomBetween(0, 360);
+                var dX = parseInt(Math.cos(deg)*amplitudeRate);
+                var dY = parseInt(Math.sin(deg)*amplitudeRate);
+
+                var nextX = X + dX;
+                var nextY = Y + dY;
+
+                // handle for outbound
+                if(nextX<animDeviation) nextX = X - parseInt(_randomBetween(0, X-animDeviation));
+                if(nextX > boundLeft-w-animDeviation) nextX = X + parseInt(_randomBetween(0, boundLeft - X - w - animDeviation));
+                if(nextY<animDeviation) nextY = Y - parseInt(_randomBetween(0, Y-animDeviation));
+                if(nextY > boundTop-h-animDeviation) nextY = Y + parseInt(_randomBetween(0, boundTop - Y - h - animDeviation));
+
+                // random animation
+                self.dom.style['transition-duration'] = durationRate+'ms';
+                self.dom.style['transition-timing-function'] = ['cubic-bezier(', Math.random(), Math.random(), Math.random(), Math.random(),')'].join(',');
+/*
+                self.dom.style['animation-duration'] = (durationRate)+'ms';
+                self.dom.style['animation-timing-function'] = ['cubic-bezier(', Math.random(), Math.random(), Math.random(), Math.random(),')'].join(',');
+                self.dom.style['animation-name'] = 'swing'+parseInt(_randomBetween(0, 4)%4);
+*/
+                self.dom.style.left = nextX +'px';
+                self.dom.style.top = nextY +'px';
+
+                doSwing();
+            }, speedRate);
+
+        })();
     },
 
     /**
-     * Freeze from swinging
+     * Freeze from swinging, re-enable normal drag animation
      */
     freeze: function(){
-        window.clearInterval(this.swingTimer);
+        var self = this;
+        window.clearInterval(self.swingTimer);
+        self.dom.style['transition-duration'] = '0ms';
+        self.dom.style['transition-timing-function'] = 'linear';
     }
 };
 
@@ -110,6 +138,7 @@ function _isBetween(o1, d1, o2, d2){
 function _randomBetween(a, b){
     return Math.random()*(b-a)+a;
 }
+
 
 /**
  * Store init values for drag

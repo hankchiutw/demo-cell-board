@@ -8,10 +8,11 @@ function Board(){
     this.dom.className = 'board';
 
     this.aspectRatio = 3/4;
-    this.downRatio = 0.9;
-    this.desityRatio = 1/6;
+    this.scaleDownRatio = 0.9;
+    this.densityRatio = 1/6;
 
     this.spots = [];
+    this.isSwing = false;
     
 }
 
@@ -29,12 +30,14 @@ Board.prototype = {
         this.spots.forEach(function(spot){
             spot.boundedSwing(self.dom.scrollWidth, self.dom.scrollHeight);
         });
+        this.isSwing = true;
     },
     freezeSpots: function(){
         var self = this;
         this.spots.forEach(function(spot){
             spot.freeze();
         });
+        this.isSwing = false;
     },
     putSpot: putSpot,
     _putSpot: _putSpot
@@ -58,6 +61,7 @@ function putSpot(spot){
     function doPut(){
         self._putSpot(spot);
         console.log('putSpot: spot, attempts, cosumedTime:', spot, spot.attemptCount, Date.now()-start);
+        if(self.isSwing) spot.boundedSwing(self.dom.scrollWidth, self.dom.scrollHeight);
     }
 }
 
@@ -71,8 +75,8 @@ function _putSpot(spot){
     spot.attemptCount++;
 
     // scale down if too many tries or too large
-    if(spot.attemptCount%10 == 0 || spot.dom.width > self.dom.scrollWidth*self.desityRatio){
-        spot.scale(self.downRatio);
+    if(spot.attemptCount%10 == 0 || spot.dom.width > self.dom.scrollWidth*self.densityRatio){
+        spot.scale(self.scaleDownRatio);
         return self._putSpot(spot);
     }
 

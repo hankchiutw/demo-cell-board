@@ -8,13 +8,14 @@ for(var i = 0;i<12;i++){
 }
 
 // start count down timer
-var countDown = 120;
+var countdown = 120;
 var freq = 10;
 var timer = setInterval(function(){
-    countDown--;
-    if(countDown%freq == 0) randomlyPut();
-    document.getElementById('count-down').innerHTML = countDown;
-    if(countDown == 0) clearInterval(timer);
+    countdown--;
+    if(countdown%freq == 0) randomlyPut();
+    document.getElementById('countdown').innerHTML = countdown;
+//    swing();
+    if(countdown <= 0) clearInterval(timer);
 }, 1000);
 
 
