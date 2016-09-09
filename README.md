@@ -1,4 +1,4 @@
-# Vanilla JS Demo
+# Vanilla.js OOP Demo
 
 A small project that demostrated several Vanilla JS's(i.e. pure JavaScript) features.
 
@@ -18,7 +18,7 @@ See [Demo page](http://hankchiutw.github.io/vanillajs-demo/):
 * Math
 
 ## JavaScript OOP(prototype)
-Modeling as a `Board` with `Spots` it.
+Modeling as a `Board` with `Spots` on it.
 
 #### Methods
 
