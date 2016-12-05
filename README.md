@@ -3,7 +3,8 @@
 A small project using JavaScript without frameworks.
 
 See [Demo page](http://hankchiutw.github.io/vanillajs-demo/).
-![demo](http://hankchiutw.github.io/vanillajs-demo/images/demo.gif)
+
+![demo](./images/demo.gif)
 
 ## What's demostrated
 
