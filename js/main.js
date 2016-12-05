@@ -8,8 +8,8 @@ for(var i = 0;i<12;i++){
 }
 
 // start count down timer
-var countdown = 120;
-var freq = 10;
+var countdown = 12;
+var freq = 1;
 var timer = setInterval(function(){
     countdown--;
     if(countdown%freq == 0) randomlyPut();

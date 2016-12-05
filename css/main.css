@@ -4,10 +4,11 @@ body{
 .board{
     background-color: lightblue;
     border: solid 1px black;
-    width: 80%;
+    width: 60%;
     min-width: 100px;
+    max-height: 550px;
     position: relative;
-    left: 10%;
+    left: 20%;
 }
 
 .spot{

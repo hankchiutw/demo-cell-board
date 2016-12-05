@@ -1,23 +1,21 @@
-# Vanilla JS Demo
+# vanillajs-demo
 
 A small project that demostrated several Vanilla JS's(i.e. pure JavaScript) features.
 
-See [Demo page](http://hankchiutw.github.io/vanillajs-demo/):
- - Randomly show one picture every 10 seconds
- - Pictures will be put non-overlapped
- - Pictures are draggable
- - Pictures can move randomly inside the area
- - Responsive picture size
+See [Demo page](http://hankchiutw.github.io/vanillajs-demo/).
+![demo](http://hankchiutw.github.io/vanillajs-demo/images/demo.gif)
 
 ## What's demostrated
 
-* JavaScript OOP(prototype)
+* JavaScript OOP using `prototype`
 * CSS3 transition
-* setTimeout, setInterval
+* `setTimeout`, `setInterval`
 * Random number generation
 * Math
+* Drag event with moving bound
+* Responsive picture size
 
-## JavaScript OOP(prototype)
+## JavaScript OOP using prototype
 Modeling as a `Board` with `Spots` it.
 
 #### Methods
