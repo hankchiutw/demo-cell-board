@@ -1,6 +1,6 @@
 # vanillajs-demo
 
-A small project that demostrated several Vanilla JS's(i.e. pure JavaScript) features.
+A small project using JavaScript without frameworks.
 
 See [Demo page](http://hankchiutw.github.io/vanillajs-demo/).
 ![demo](http://hankchiutw.github.io/vanillajs-demo/images/demo.gif)
@@ -16,7 +16,7 @@ See [Demo page](http://hankchiutw.github.io/vanillajs-demo/).
 * Responsive picture size
 
 ## JavaScript OOP using prototype
-Modeling as a `Board` with `Spots` it.
+Modeling as a `Board` with `Spots` on it.
 
 #### Methods
 
